@@ -142,13 +142,22 @@ function endFlight() {
   alert("Continue your journey?");
 }
 document.onkeydown = function(evt) {
-    if (evt.code == "Space") {
+  const currentZoom = game.getMap().getView().getZoom();
+  switch (evt.code) {
+    case "Space":
       if (game.paused()) {
         game.start()
       } else {
         game.pause()
       }
-    }
+      break;
+    case "ArrowUp":
+      game.getMap().getView().setZoom(currentZoom - .05);
+      break;
+    case "ArrowDown":
+      game.getMap().getView().setZoom(currentZoom + .05);
+      break;
+  }
 };
 
 setTimeout(endFlight, 120000)
