@@ -5,9 +5,51 @@
     <link rel="icon" type="image/x-icon" href="https://openlayers.org/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Using OpenLayers with Vite</title>
+    <style>
+      /* The Modal (background) */
+      .modal {
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      }
+      
+      /* Modal Content/Box */
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 300px;
+        max-width: 80%;
+      }
+    </style>
   </head>
   <body>
     <div id="map"></div>
     <script type="module" src="./main.js"></script>
+    <div id="myModal" class="modal" style="display:block">
+      <div class="modal-content">
+        <p>Fly around the French Quarter in 1885!</p>
+        <p><strong>desktop controls</strong></p>
+        <ul>
+          <li>&rarr; turn right</li>
+          <li>&larr; turn left</li>
+          <li>&uarr; increase altitude</li>
+          <li>&darr; decrease altitude</li>
+        </ul>
+        <p><strong>mobile controls</strong></p>
+        <ul>
+          <li>tap the map to change direction</li>
+        </ul>
+        <p><em>Hit the <strong>space bar</strong> to start/stop your flight.</em></p>
+        <button id="closeModal">Start flying!</button>
+      </div>
+    </div> 
   </body>
 </html>

@@ -50,7 +50,9 @@ const no1885lyr = new TileLayer({
   source: new TileJSON({
     url: tilejsonUrl,
     attributions: ["OldInsuranceMaps contributors; Library of Congress"]
-  })
+  }),
+  pixelRatio: 2,
+  preload: "infinity"
 })
  
 
@@ -85,12 +87,17 @@ overlay.getSource().addFeatures([
   plane
 ]);
 
-function getDirection(pt){
-  if (pt) a = Math.atan2 ( pt[0]-center[0], pt[1]-center[1] ) - Math.PI/2;
-  else a = Math.random()*2*Math.PI;
+function setPlaneRotation() {
   plane.getStyle().getImage().setRotation(a + Math.PI/2);
   shadow.getStyle().getImage().setRotation(a + Math.PI/2);
 }
+
+function getDirection(pt){
+  if (pt) a = Math.atan2 ( pt[0]-center[0], pt[1]-center[1] ) - Math.PI/2;
+  else a = Math.random()*2*Math.PI;
+  setPlaneRotation()
+}
+
 const game = new Game({
   target: 'map',
   layers: [
@@ -101,8 +108,13 @@ const game = new Game({
   center: center,
   zoom: zoom,
 });
-getDirection()
 
+game.getMap().setProperties({
+  pixelRatio: 2,
+  maxTilesLoading: 50,
+})
+
+getDirection()
 game.getMap().on("click", function(e){
   getDirection(e.coordinate);
 })
@@ -134,21 +146,48 @@ game.on ("render", function(e) {
   shadow.getGeometry().setCoordinates([center[0]+(zoom*0.1), center[1]-zoom*0.15]);
 });
 
-alert("Fly around the French Quarter in 1885. Click or tap on the map to change direction. Use the space bar to pause your flight.")
-game.start();
+function toggleModal() {
+  const modal = document.getElementById("myModal")
+  modal.style.display == 'block' ?
+    modal.style.display = 'none' :
+    modal.style.display = 'block'
+}
+
+document.getElementById('closeModal').onclick = (e) => {
+  toggleModal();
+  game.start();
+}
 
 
 function endFlight() {
   alert("Continue your journey?");
 }
 document.onkeydown = function(evt) {
-    if (evt.code == "Space") {
+  const currentZoom = game.getMap().getView().getZoom();
+  switch (evt.code) {
+    case "Space":
       if (game.paused()) {
         game.start()
       } else {
         game.pause()
       }
-    }
+      toggleModal()
+      break;
+    case "ArrowUp":
+      game.getMap().getView().setZoom(currentZoom - .05);
+      break;
+    case "ArrowDown":
+      game.getMap().getView().setZoom(currentZoom + .05);
+      break;
+    case "ArrowRight":
+      a = a + .1;
+      setPlaneRotation()
+      break;
+    case "ArrowLeft":
+      a = a - .1;
+      setPlaneRotation()
+      break;
+  }
 };
 
 setTimeout(endFlight, 120000)
